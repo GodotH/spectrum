@@ -45,30 +45,31 @@ export default function WelcomeScreen({ onStart, onResume, onHistory }: Props) {
     };
   }, [openTooltip]);
 
-  // Boot sequence animation
+  // Boot sequence animation — single effect with timeouts to avoid StrictMode issues
+  const bootStarted = useRef(false);
   useEffect(() => {
-    // Phase 1: start loading bar after SPECTRUM appears
-    const t1 = setTimeout(() => setBootPhase(1), 400);
+    if (bootStarted.current) return;
+    bootStarted.current = true;
+
+    const t1 = setTimeout(() => {
+      setBootPhase(1);
+      let progress = 0;
+      const interval = setInterval(() => {
+        progress += Math.random() * 12 + 4;
+        if (progress >= 100) {
+          progress = 100;
+          clearInterval(interval);
+          setLoadProgress(100);
+          setTimeout(() => setBootPhase(2), 200);
+          setTimeout(() => setBootPhase(3), 900);
+        } else {
+          setLoadProgress(Math.floor(progress));
+        }
+      }, 80);
+    }, 500);
+
     return () => clearTimeout(t1);
   }, []);
-
-  useEffect(() => {
-    if (bootPhase !== 1) return;
-    let progress = 0;
-    const interval = setInterval(() => {
-      progress += Math.random() * 18 + 6;
-      if (progress >= 100) {
-        progress = 100;
-        clearInterval(interval);
-        setLoadProgress(100);
-        setTimeout(() => setBootPhase(2), 150);
-        setTimeout(() => setBootPhase(3), 700);
-      } else {
-        setLoadProgress(Math.floor(progress));
-      }
-    }, 70);
-    return () => clearInterval(interval);
-  }, [bootPhase]);
 
   const toggleTest = (type: TestType) => {
     setSelectedTests(prev => {
