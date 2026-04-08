@@ -18,9 +18,9 @@ export default function WelcomeScreen({ onStart, onResume, onHistory }: Props) {
   const [disclaimerAccepted, setDisclaimerAccepted] = useState(() => localStorage.getItem('spectrum_disclaimer') === 'accepted');
   const [showDisclaimer, setShowDisclaimer] = useState(false);
   const hasHistory = getResults().length > 0;
-  const [bootPhase, setBootPhase] = useState(0); // 0=spectrum, 1=loading, 2=activated, 3=ready
-  const bootDone = bootPhase >= 3;
-  const [loadProgress, setLoadProgress] = useState(0);
+  const [loadProgress, setLoadProgress] = useState(-1); // -1=not started, 0-99=loading, 100=done
+  const [showActivated, setShowActivated] = useState(false);
+  const [bootDone, setBootDone] = useState(false);
   const [savedState, setSavedState] = useState<InProgressState | null>(null);
   const [openTooltip, setOpenTooltip] = useState<string | null>(null);
   const tooltipRef = useRef<HTMLDivElement | null>(null);
@@ -45,31 +45,29 @@ export default function WelcomeScreen({ onStart, onResume, onHistory }: Props) {
     };
   }, [openTooltip]);
 
-  // Boot sequence animation — single effect with timeouts to avoid StrictMode issues
-  const bootStarted = useRef(false);
+  // Boot animation
+  const bootRan = useRef(false);
   useEffect(() => {
-    if (bootStarted.current) return;
-    bootStarted.current = true;
-
-    const t1 = setTimeout(() => {
-      setBootPhase(1);
-      let progress = 0;
-      const interval = setInterval(() => {
-        progress += Math.random() * 2 + 0.5;
-        if (progress >= 100) {
-          progress = 100;
-          clearInterval(interval);
-          setLoadProgress(100);
-          setTimeout(() => setBootPhase(2), 300);
-          setTimeout(() => setBootPhase(3), 1200);
-        } else {
-          setLoadProgress(Math.floor(progress));
-        }
+    if (bootRan.current) return;
+    bootRan.current = true;
+    const t = setTimeout(() => {
+      setLoadProgress(0);
+      let p = 0;
+      const tick = setInterval(() => {
+        p += Math.random() * 3 + 1;
+        if (p >= 100) { p = 100; clearInterval(tick); }
+        setLoadProgress(Math.min(Math.floor(p), 100));
       }, 100);
-    }, 500);
-
-    return () => clearTimeout(t1);
+    }, 600);
+    return () => clearTimeout(t);
   }, []);
+
+  useEffect(() => {
+    if (loadProgress < 100) return;
+    const t1 = setTimeout(() => setShowActivated(true), 300);
+    const t2 = setTimeout(() => setBootDone(true), 1000);
+    return () => { clearTimeout(t1); clearTimeout(t2); };
+  }, [loadProgress]);
 
   const toggleTest = (type: TestType) => {
     setSelectedTests(prev => {
@@ -139,18 +137,18 @@ export default function WelcomeScreen({ onStart, onResume, onHistory }: Props) {
             {'>'} SPECTRUM v1.0
           </motion.div>
 
-          {/* Loading bar — visible only during loading phase */}
-          {bootPhase >= 1 && bootPhase < 2 && (
-            <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ duration: 0.1 }} className="text-phosphor-dim">
+          {/* Loading bar */}
+          {loadProgress >= 0 && !showActivated && (
+            <div className="text-phosphor-dim">
               {'>'} Autism Detection Toolkit{' '}
               <span className="text-phosphor">
-                [{'█'.repeat(Math.floor(loadProgress / 5))}{'░'.repeat(20 - Math.floor(loadProgress / 5))}] {loadProgress}%
+                [{'█'.repeat(Math.floor(loadProgress / 8))}{'░'.repeat(12 - Math.floor(loadProgress / 8))}] {loadProgress}%
               </span>
-            </motion.div>
+            </div>
           )}
 
           {/* Activated — replaces loading bar */}
-          {bootPhase >= 2 && (
+          {showActivated && (
             <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ duration: 0.15 }} className="text-phosphor text-glow-green">
               {'>'} Autism Detection Toolkit Activated
             </motion.div>
