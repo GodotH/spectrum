@@ -139,10 +139,10 @@ export default function WelcomeScreen({ onStart, onResume, onHistory }: Props) {
 
           {/* Loading bar */}
           {loadProgress >= 0 && !showActivated && (
-            <div className="text-phosphor-dim">
+            <div className="text-phosphor-dim leading-5">
               {'>'} Autism Detection Toolkit{' '}
-              <span className="text-phosphor">
-                [{'█'.repeat(Math.floor(loadProgress / 8))}{'░'.repeat(12 - Math.floor(loadProgress / 8))}] {loadProgress}%
+              <span className="text-phosphor text-[10px]">
+                {'▓'.repeat(Math.floor(loadProgress / 8))}{'░'.repeat(12 - Math.floor(loadProgress / 8))} {loadProgress}%
               </span>
             </div>
           )}
