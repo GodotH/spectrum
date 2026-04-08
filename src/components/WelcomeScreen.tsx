@@ -137,17 +137,30 @@ export default function WelcomeScreen({ onStart, onResume, onHistory }: Props) {
             {'>'} SPECTRUM v1.0
           </motion.div>
 
-          {/* Loading bar */}
+          {/* Privacy mode line */}
           {loadProgress >= 0 && !showActivated && (
-            <div className="text-phosphor-dim leading-5">
-              {'>'} Autism Detection Toolkit{' '}
-              <span className="text-phosphor text-[10px]">
-                {'▓'.repeat(Math.floor(loadProgress / 8))}{'░'.repeat(12 - Math.floor(loadProgress / 8))} {loadProgress}%
+            <div className="text-phosphor-dim">
+              {'>'} Privacy Mode{' '}
+              <span className="text-phosphor">
+                {'▓'.repeat(Math.floor(loadProgress / 8))}{'░'.repeat(12 - Math.floor(loadProgress / 8))}
               </span>
             </div>
           )}
+          {showActivated && (
+            <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ duration: 0.15 }} className="text-phosphor text-glow-green">
+              {'>'} Privacy Mode Activated
+            </motion.div>
+          )}
 
-          {/* Activated — replaces loading bar */}
+          {/* Toolkit line */}
+          {loadProgress >= 0 && !showActivated && (
+            <div className="text-phosphor-dim">
+              {'>'} Autism Detection Toolkit{' '}
+              <span className="text-phosphor">
+                {'▓'.repeat(Math.floor(loadProgress / 8))}{'░'.repeat(12 - Math.floor(loadProgress / 8))}
+              </span>
+            </div>
+          )}
           {showActivated && (
             <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ duration: 0.15 }} className="text-phosphor text-glow-green">
               {'>'} Autism Detection Toolkit Activated
