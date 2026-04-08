@@ -14,7 +14,7 @@ export default function App() {
       <div className="crt-vignette" />
 
       {q.screen === 'welcome' && (
-        <WelcomeScreen onStart={q.startTest} onResume={q.resumeTest} onHistory={() => q.setScreen('history')} />
+        <WelcomeScreen initialName={q.userName} onStart={q.startTest} onResume={q.resumeTest} onHistory={() => q.setScreen('history')} />
       )}
       {q.screen === 'questionnaire' && (
         <QuestionScreen
@@ -34,7 +34,7 @@ export default function App() {
           onForward={q.goForward}
           onGoToQuestion={q.goToQuestion}
           onFinish={q.finishTest}
-          onQuit={q.goHome}
+          onQuit={q.quitToSelect}
         />
       )}
       {q.screen === 'results' && q.result && (

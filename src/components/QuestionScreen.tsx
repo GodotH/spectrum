@@ -215,7 +215,7 @@ export default function QuestionScreen({
         </div>
         <button
           onClick={() => setShowQuitConfirm(true)}
-          className="text-xs text-term-red hover:text-term-red transition-colors duration-150 font-mono uppercase shrink-0 min-h-[36px] px-2 flex items-center"
+          className="text-xs text-phosphor hover:text-phosphor transition-colors duration-150 font-mono uppercase shrink-0 min-h-[36px] px-2 flex items-center"
         >
           <span className="hidden sm:inline">[ESC] </span>END
         </button>
@@ -224,9 +224,9 @@ export default function QuestionScreen({
       {/* Quit confirmation overlay */}
       {showQuitConfirm && (
         <div className="fixed inset-0 z-[100] flex items-center justify-center bg-terminal-bg/90 px-4">
-          <div className="border border-term-red p-6 bg-terminal-bg w-full max-w-sm text-center space-y-4">
-            <div className="text-sm text-term-red font-mono uppercase">{'>'} ABORT TEST?</div>
-            <p className="text-xs text-phosphor-dim font-mono">Progress will be lost. {answeredCount}/{totalQuestions} answered.</p>
+          <div className="border border-phosphor p-6 bg-terminal-bg w-full max-w-sm text-center space-y-4 border-glow-green">
+            <div className="text-sm text-phosphor font-mono uppercase">{'>'} END TEST?</div>
+            <p className="text-xs text-phosphor font-mono">Progress will be lost. {answeredCount}/{totalQuestions} answered.</p>
             <div className="flex gap-3 justify-center">
               <button
                 onClick={onQuit}

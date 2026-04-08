@@ -168,6 +168,15 @@ export function useQuestionnaire() {
     setAnswers([]);
   }, []);
 
+  const quitToSelect = useCallback(() => {
+    clearInProgress();
+    setScreen('welcome');
+    setResult(null);
+    setCurrentIndex(0);
+    setAnswers([]);
+    // userName is preserved so WelcomeScreen can skip to test selection
+  }, []);
+
   const allAnswered = answers.length === totalQuestions;
   const isLastQuestion = currentIndex === totalQuestions - 1;
 
@@ -183,6 +192,6 @@ export function useQuestionnaire() {
     result,
     allAnswered, isLastQuestion,
     testQueue, queueIndex, isBattery, hasNextInQueue, nextTestType, batteryResults,
-    startTest, resumeTest, answerQuestion, goBack, goForward, goToQuestion, finishTest, goHome, advanceQueue,
+    startTest, resumeTest, answerQuestion, goBack, goForward, goToQuestion, finishTest, goHome, quitToSelect, advanceQueue,
   };
 }

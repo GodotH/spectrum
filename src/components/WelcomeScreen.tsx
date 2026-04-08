@@ -6,25 +6,27 @@ import { getResults, getInProgress, clearInProgress } from '../utils/storage';
 import type { InProgressState } from '../utils/storage';
 
 interface Props {
+  initialName?: string;
   onStart: (name: string, types: TestType[]) => void;
   onResume: (state: InProgressState) => void;
   onHistory: () => void;
 }
 
-export default function WelcomeScreen({ onStart, onResume, onHistory }: Props) {
-  const [name, setName] = useState('');
-  const [nameConfirmed, setNameConfirmed] = useState(false);
+export default function WelcomeScreen({ initialName, onStart, onResume, onHistory }: Props) {
+  const [name, setName] = useState(initialName || '');
+  const [nameConfirmed, setNameConfirmed] = useState(!!initialName);
   const [selectedTests, setSelectedTests] = useState<Set<TestType>>(new Set());
   const [disclaimerAccepted, setDisclaimerAccepted] = useState(() => localStorage.getItem('spectrum_disclaimer') === 'accepted');
   const [showDisclaimer, setShowDisclaimer] = useState(false);
   const hasHistory = getResults().length > 0;
-  const [toolkitProgress, setToolkitProgress] = useState(-1);
-  const [privacyProgress, setPrivacyProgress] = useState(-1);
-  const [toolkitDone, setToolkitDone] = useState(false);
-  const [privacyDone, setPrivacyDone] = useState(false);
+  const skipBoot = !!initialName;
+  const [toolkitProgress, setToolkitProgress] = useState(skipBoot ? 100 : -1);
+  const [privacyProgress, setPrivacyProgress] = useState(skipBoot ? 100 : -1);
+  const [toolkitDone, setToolkitDone] = useState(skipBoot);
+  const [privacyDone, setPrivacyDone] = useState(skipBoot);
   const [spinnerFrame, setSpinnerFrame] = useState(0);
-  const [showChecks, setShowChecks] = useState(false);
-  const [bootDone, setBootDone] = useState(false);
+  const [showChecks, setShowChecks] = useState(skipBoot);
+  const [bootDone, setBootDone] = useState(skipBoot);
   const [savedState, setSavedState] = useState<InProgressState | null>(null);
   const [openTooltip, setOpenTooltip] = useState<string | null>(null);
   const tooltipRef = useRef<HTMLDivElement | null>(null);
