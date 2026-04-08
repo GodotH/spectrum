@@ -147,33 +147,27 @@ export default function WelcomeScreen({ onStart, onResume, onHistory }: Props) {
           </motion.div>
 
           {/* Privacy mode */}
-          {privacyProgress >= 0 && !privacyDone && (
-            <div className="text-phosphor-dim">
+          {privacyProgress >= 0 && (
+            <div className="text-phosphor text-glow-green">
               {'>'} Privacy Mode{' '}
-              <span className="text-phosphor text-[6px] align-middle">
-                {'▓'.repeat(Math.floor(privacyProgress / 8))}{'░'.repeat(12 - Math.floor(privacyProgress / 8))}
-              </span>
+              {!privacyDone ? (
+                <span className="text-[6px] align-middle">
+                  {'▓'.repeat(Math.floor(privacyProgress / 8))}{'░'.repeat(12 - Math.floor(privacyProgress / 8))}
+                </span>
+              ) : 'Activated'}
             </div>
-          )}
-          {privacyDone && (
-            <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ duration: 0.15 }} className="text-phosphor text-glow-green">
-              {'>'} Privacy Mode Activated
-            </motion.div>
           )}
 
           {/* Toolkit */}
-          {toolkitProgress >= 0 && !toolkitDone && (
-            <div className="text-phosphor-dim">
+          {toolkitProgress >= 0 && (
+            <div className="text-phosphor text-glow-green">
               {'>'} Autism Detection Toolkit{' '}
-              <span className="text-phosphor text-[6px] align-middle">
-                {'▓'.repeat(Math.floor(toolkitProgress / 8))}{'░'.repeat(12 - Math.floor(toolkitProgress / 8))}
-              </span>
+              {!toolkitDone ? (
+                <span className="text-[6px] align-middle">
+                  {'▓'.repeat(Math.floor(toolkitProgress / 8))}{'░'.repeat(12 - Math.floor(toolkitProgress / 8))}
+                </span>
+              ) : 'Activated'}
             </div>
-          )}
-          {toolkitDone && (
-            <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ duration: 0.15 }} className="text-phosphor text-glow-green">
-              {'>'} Autism Detection Toolkit Activated
-            </motion.div>
           )}
 
           {/* Resume panel */}
