@@ -18,10 +18,12 @@ export default function WelcomeScreen({ onStart, onResume, onHistory }: Props) {
   const [disclaimerAccepted, setDisclaimerAccepted] = useState(() => localStorage.getItem('spectrum_disclaimer') === 'accepted');
   const [showDisclaimer, setShowDisclaimer] = useState(false);
   const hasHistory = getResults().length > 0;
-  const [privacyProgress, setPrivacyProgress] = useState(-1);
   const [toolkitProgress, setToolkitProgress] = useState(-1);
-  const [privacyDone, setPrivacyDone] = useState(false);
+  const [privacyProgress, setPrivacyProgress] = useState(-1);
   const [toolkitDone, setToolkitDone] = useState(false);
+  const [privacyDone, setPrivacyDone] = useState(false);
+  const [spinnerFrame, setSpinnerFrame] = useState(0);
+  const [showChecks, setShowChecks] = useState(false);
   const [bootDone, setBootDone] = useState(false);
   const [savedState, setSavedState] = useState<InProgressState | null>(null);
   const [openTooltip, setOpenTooltip] = useState<string | null>(null);
@@ -47,13 +49,23 @@ export default function WelcomeScreen({ onStart, onResume, onHistory }: Props) {
     };
   }, [openTooltip]);
 
-  // Boot animation — privacy first, then toolkit
+  // Braille spinner
+  const spinnerChars = '⠋⠙⠹⠸⠼⠴⠦⠧⠇⠏';
+  useEffect(() => {
+    const allDone = toolkitDone && privacyDone;
+    if (allDone) return;
+    if (toolkitProgress < 0 && privacyProgress < 0) return;
+    const tick = setInterval(() => setSpinnerFrame(f => (f + 1) % spinnerChars.length), 80);
+    return () => clearInterval(tick);
+  }, [toolkitProgress, privacyProgress, toolkitDone, privacyDone]);
+
+  // Boot animation — toolkit first, then privacy
   const bootRan = useRef(false);
   useEffect(() => {
     if (bootRan.current) return;
     bootRan.current = true;
 
-    function animateBar(setProgress: (p: number) => void, onDone: () => void) {
+    function animateStep(setProgress: (p: number) => void, onDone: () => void) {
       let p = 0;
       setProgress(0);
       const tick = setInterval(() => {
@@ -63,15 +75,16 @@ export default function WelcomeScreen({ onStart, onResume, onHistory }: Props) {
       }, 100);
     }
 
-    // Start privacy bar after 600ms
+    // Start toolkit after 600ms
     setTimeout(() => {
-      animateBar(setPrivacyProgress, () => {
-        setPrivacyDone(true);
-        // Start toolkit bar after privacy finishes
+      animateStep(setToolkitProgress, () => {
+        setToolkitDone(true);
+        // Start privacy after toolkit finishes
         setTimeout(() => {
-          animateBar(setToolkitProgress, () => {
-            setToolkitDone(true);
-            setTimeout(() => setBootDone(true), 600);
+          animateStep(setPrivacyProgress, () => {
+            setPrivacyDone(true);
+            setTimeout(() => setShowChecks(true), 500);
+            setTimeout(() => setBootDone(true), 1200);
           });
         }, 300);
       });
@@ -146,27 +159,25 @@ export default function WelcomeScreen({ onStart, onResume, onHistory }: Props) {
             {'>'} SPECTRUM v1.0
           </motion.div>
 
-          {/* Privacy mode */}
-          {privacyProgress >= 0 && (
+          {/* Toolkit — loads first */}
+          {toolkitProgress >= 0 && (
             <div className="text-phosphor text-glow-green">
-              {'>'} Privacy Mode{' '}
-              {!privacyDone ? (
-                <span className="text-[6px] align-middle">
-                  {'▓'.repeat(Math.floor(privacyProgress / 8))}{'░'.repeat(12 - Math.floor(privacyProgress / 8))}
-                </span>
-              ) : 'Activated'}
+              {'>'}{' '}
+              {!toolkitDone
+                ? <><span className="text-amber">{spinnerChars[spinnerFrame]}</span> Autism Detection Toolkit</>
+                : <>Autism Detection Toolkit Activated{showChecks && <span className="text-amber"> ✓</span>}</>
+              }
             </div>
           )}
 
-          {/* Toolkit */}
-          {toolkitProgress >= 0 && (
+          {/* Privacy — loads second */}
+          {privacyProgress >= 0 && (
             <div className="text-phosphor text-glow-green">
-              {'>'} Autism Detection Toolkit{' '}
-              {!toolkitDone ? (
-                <span className="text-[6px] align-middle">
-                  {'▓'.repeat(Math.floor(toolkitProgress / 8))}{'░'.repeat(12 - Math.floor(toolkitProgress / 8))}
-                </span>
-              ) : 'Activated'}
+              {'>'}{' '}
+              {!privacyDone
+                ? <><span className="text-amber">{spinnerChars[spinnerFrame]}</span> Privacy Mode</>
+                : <>Privacy Mode Activated{showChecks && <span className="text-amber"> ✓</span>}</>
+              }
             </div>
           )}
 
