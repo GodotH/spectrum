@@ -201,7 +201,7 @@ export default function QuestionScreen({
       {/* Top bar */}
       <div className="fixed top-0 left-0 right-0 border-b border-terminal-border bg-terminal-bg/95 px-3 sm:px-6 py-2 sm:py-3 flex items-center justify-between z-50 gap-2">
         <div className="flex items-center gap-2 sm:gap-4 min-w-0">
-          <span className="text-xs text-phosphor font-mono uppercase tracking-wider text-glow-green shrink-0">
+          <span className="text-xs text-phosphor font-mono tracking-wider text-glow-green shrink-0">
             SPECTRUM v1.0
           </span>
           <span className="text-phosphor-faint hidden sm:inline">│</span>

@@ -278,7 +278,7 @@ export default function WelcomeScreen({ initialName, onStart, onResume, onHistor
                         [?]
                       </button>
                       {/* Tooltip — hover on desktop, tap-toggle on mobile */}
-                      <div className={`absolute left-0 right-0 bottom-full mb-1 z-50 ${isTooltipOpen ? 'block' : 'hidden group-hover:block'}`}>
+                      <div className={`absolute left-0 right-0 bottom-full mb-1 z-50 transition-all duration-150 ${isTooltipOpen ? 'opacity-100 visible' : 'opacity-0 invisible group-hover:opacity-100 group-hover:visible'}`} style={!isTooltipOpen ? { transitionDelay: '0.4s' } : undefined}>
                         <div className="border border-phosphor/50 bg-terminal-bg p-3 text-[10px] leading-relaxed text-phosphor-dim font-mono shadow-lg shadow-phosphor/5">
                           <span className="text-amber">{'>'}</span> {item.tooltip}
                         </div>
