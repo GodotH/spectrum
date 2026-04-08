@@ -1,0 +1,30 @@
+import type { Question } from '../types';
+
+// Reverse-scored items: 3, 12, 19, 22, 24 — marked with scoringDirection: 'disagree'
+export const CATQ_QUESTIONS: Question[] = [
+  { id: 1,  text: "When I am interacting with someone, I deliberately copy their body language or facial expressions.", scoringDirection: 'agree', subscale: 'compensation' },
+  { id: 2,  text: "I monitor my body language or facial expressions so that I appear relaxed.", scoringDirection: 'agree', subscale: 'masking' },
+  { id: 3,  text: "I rarely feel the need to put on an act in order to get through a social situation.", scoringDirection: 'disagree', subscale: 'assimilation' },
+  { id: 4,  text: "I have developed a script to follow in social situations.", scoringDirection: 'agree', subscale: 'compensation' },
+  { id: 5,  text: "I will repeat phrases that I have heard others say in the exact same way that I first heard them.", scoringDirection: 'agree', subscale: 'compensation' },
+  { id: 6,  text: "I adjust my body language or facial expressions so that I appear interested by the person I am interacting with.", scoringDirection: 'agree', subscale: 'masking' },
+  { id: 7,  text: "In social situations, I feel like I'm 'performing' rather than being myself.", scoringDirection: 'agree', subscale: 'assimilation' },
+  { id: 8,  text: "In my own social interactions, I use behaviours that I have learned from watching other people interacting.", scoringDirection: 'agree', subscale: 'compensation' },
+  { id: 9,  text: "I always think about the impression I make on other people.", scoringDirection: 'agree', subscale: 'masking' },
+  { id: 10, text: "I need the support of other people in order to socialise.", scoringDirection: 'agree', subscale: 'assimilation' },
+  { id: 11, text: "I practice my facial expressions and body language to make sure they look natural.", scoringDirection: 'agree', subscale: 'compensation' },
+  { id: 12, text: "I don't feel the need to make eye contact with other people if I don't want to.", scoringDirection: 'disagree', subscale: 'masking' },
+  { id: 13, text: "I have to force myself to interact with people when I am in social situations.", scoringDirection: 'agree', subscale: 'assimilation' },
+  { id: 14, text: "I have tried to improve my understanding of social skills by watching other people.", scoringDirection: 'agree', subscale: 'compensation' },
+  { id: 15, text: "I monitor my body language or facial expressions so that I appear interested by the person I am interacting with.", scoringDirection: 'agree', subscale: 'masking' },
+  { id: 16, text: "When in social situations, I try to find ways to avoid interacting with others.", scoringDirection: 'agree', subscale: 'assimilation' },
+  { id: 17, text: "I have researched the rules of social interactions to improve my own social skills.", scoringDirection: 'agree', subscale: 'compensation' },
+  { id: 18, text: "I am always aware of the impression I make on other people.", scoringDirection: 'agree', subscale: 'masking' },
+  { id: 19, text: "I feel free to be myself when I am with other people.", scoringDirection: 'disagree', subscale: 'assimilation' },
+  { id: 20, text: "I learn how people use their bodies and faces to interact by watching television or films, or by reading fiction.", scoringDirection: 'agree', subscale: 'compensation' },
+  { id: 21, text: "I adjust my body language or facial expressions so that I appear relaxed.", scoringDirection: 'agree', subscale: 'masking' },
+  { id: 22, text: "When talking to other people, I feel like the conversation flows naturally.", scoringDirection: 'disagree', subscale: 'assimilation' },
+  { id: 23, text: "I have spent time learning social skills from television shows and films, and try to use these in my interactions.", scoringDirection: 'agree', subscale: 'compensation' },
+  { id: 24, text: "In social interactions, I do not pay attention to what my face or body are doing.", scoringDirection: 'disagree', subscale: 'masking' },
+  { id: 25, text: "In social situations, I feel like I am pretending to be 'normal'.", scoringDirection: 'agree', subscale: 'assimilation' },
+];

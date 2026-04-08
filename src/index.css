@@ -1,0 +1,118 @@
+@import "tailwindcss";
+
+@theme {
+  --color-terminal-bg: #0a0a0a;
+  --color-terminal-bg-light: #111111;
+  --color-terminal-border: #00802040;
+  --color-terminal-border-bright: #00ff4160;
+  --color-phosphor: #00ff41;
+  --color-phosphor-dim: #00ff4180;
+  --color-phosphor-faint: #00ff4130;
+  --color-amber: #ffb000;
+  --color-amber-dim: #ffb00080;
+  --color-amber-faint: #ffb00030;
+  --color-cyan: #00d4ff;
+  --color-cyan-dim: #00d4ff60;
+  --color-term-red: #ff3333;
+  --color-term-red-dim: #ff333360;
+  --color-term-yellow: #ffb000;
+  --font-family-mono: 'Courier New', 'Lucida Console', monospace;
+}
+
+body {
+  margin: 0;
+  background: #0a0a0a;
+  font-family: 'Courier New', 'Lucida Console', monospace;
+  -webkit-font-smoothing: none;
+  -moz-osx-font-smoothing: auto;
+}
+
+/* CRT Scanline overlay */
+.crt-overlay {
+  pointer-events: none;
+  position: fixed;
+  inset: 0;
+  z-index: 9999;
+  background: repeating-linear-gradient(
+    0deg,
+    transparent,
+    transparent 3px,
+    rgba(0, 0, 0, 0.03) 3px,
+    rgba(0, 0, 0, 0.03) 4px
+  );
+}
+
+/* CRT vignette */
+.crt-vignette {
+  pointer-events: none;
+  position: fixed;
+  inset: 0;
+  z-index: 9998;
+  background: radial-gradient(
+    ellipse at center,
+    transparent 60%,
+    rgba(0, 0, 0, 0.3) 100%
+  );
+}
+
+/* Blinking cursor */
+@keyframes blink-slow {
+  0%, 60% { opacity: 1; }
+  61%, 100% { opacity: 0; }
+}
+
+.cursor-blink {
+  animation: blink-slow 1.5s step-end infinite;
+}
+
+/* Subtle glow for text */
+.text-glow-green {
+  text-shadow: 0 0 4px rgba(0, 255, 65, 0.3);
+}
+
+.text-glow-amber {
+  text-shadow: 0 0 4px rgba(255, 176, 0, 0.3);
+}
+
+.text-glow-cyan {
+  text-shadow: 0 0 4px rgba(0, 212, 255, 0.3);
+}
+
+/* Glow border effect */
+.border-glow-green {
+  box-shadow: 0 0 6px rgba(0, 255, 65, 0.15), inset 0 0 6px rgba(0, 255, 65, 0.05);
+}
+
+.border-glow-amber {
+  box-shadow: 0 0 6px rgba(255, 176, 0, 0.15), inset 0 0 6px rgba(255, 176, 0, 0.05);
+}
+
+/* ASCII progress bar styling */
+.ascii-bar {
+  letter-spacing: 0;
+  line-height: 1;
+}
+
+/* Scrollbar styling */
+::-webkit-scrollbar {
+  width: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: #0a0a0a;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #00802040;
+  border-radius: 3px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #00ff4140;
+}
+
+/* Selection color */
+::selection {
+  background: rgba(0, 255, 65, 0.2);
+  color: #00ff41;
+}
