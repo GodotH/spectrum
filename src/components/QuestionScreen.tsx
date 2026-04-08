@@ -324,7 +324,7 @@ export default function QuestionScreen({
           ) : (
             <button
               onClick={onForward}
-              disabled={!currentAnswer}
+              disabled={currentAnswer === undefined}
               className="text-xs font-mono text-phosphor-dim hover:text-phosphor disabled:opacity-20 transition-colors duration-150 uppercase"
             >
               NEXT {'>'}
