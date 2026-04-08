@@ -55,17 +55,17 @@ export default function WelcomeScreen({ onStart, onResume, onHistory }: Props) {
       setBootPhase(1);
       let progress = 0;
       const interval = setInterval(() => {
-        progress += Math.random() * 12 + 4;
+        progress += Math.random() * 2 + 0.5;
         if (progress >= 100) {
           progress = 100;
           clearInterval(interval);
           setLoadProgress(100);
-          setTimeout(() => setBootPhase(2), 200);
-          setTimeout(() => setBootPhase(3), 900);
+          setTimeout(() => setBootPhase(2), 300);
+          setTimeout(() => setBootPhase(3), 1200);
         } else {
           setLoadProgress(Math.floor(progress));
         }
-      }, 80);
+      }, 100);
     }, 500);
 
     return () => clearTimeout(t1);
