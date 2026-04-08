@@ -23,29 +23,36 @@ interface Props {
 }
 
 function AsciiProgressBar({ progress }: { progress: number }) {
-  const barWidth = 32;
+  const barWidth = 16;
   const filled = Math.round((progress / 100) * barWidth);
   const bar = '\u2588'.repeat(filled) + '\u2591'.repeat(barWidth - filled);
   const pct = Math.round(progress);
   return (
-    <div className="font-mono text-xs text-phosphor-dim ascii-bar">
-      <span className="text-phosphor-faint">[</span>
-      <span className="text-phosphor text-glow-green">{bar.slice(0, filled)}</span>
-      <span className="text-phosphor-faint">{bar.slice(filled)}</span>
-      <span className="text-phosphor-faint">]</span>
-      <span className="text-phosphor-dim ml-2">{pct}%</span>
-    </div>
+    <>
+      {/* Full bar — hidden on mobile */}
+      <div className="hidden sm:flex font-mono text-xs text-phosphor-dim ascii-bar items-center">
+        <span className="text-phosphor-faint">[</span>
+        <span className="text-phosphor text-glow-green">{bar.slice(0, filled)}</span>
+        <span className="text-phosphor-faint">{bar.slice(filled)}</span>
+        <span className="text-phosphor-faint">]</span>
+        <span className="text-phosphor-dim ml-1">{pct}%</span>
+      </div>
+      {/* Compact percentage — mobile only */}
+      <div className="flex sm:hidden font-mono text-xs text-phosphor-dim">
+        <span>{pct}%</span>
+      </div>
+    </>
   );
 }
 
 function OptionButton({ option, selected, onSelect, size = 'md' }: {
   option: AnswerOption; selected: boolean; onSelect: (v: number) => void; size?: 'sm' | 'md';
 }) {
-  const textClass = size === 'sm' ? 'text-[11px] leading-tight' : 'text-xs leading-snug';
+  const textClass = size === 'sm' ? 'text-[11px] sm:text-[11px] leading-tight' : 'text-sm sm:text-xs leading-snug';
   return (
     <button
       onClick={() => onSelect(option.value)}
-      className={`group border px-3 py-3 text-left transition-all duration-150 font-mono ${
+      className={`group border px-3 py-3.5 sm:py-3 text-left transition-all duration-150 font-mono min-h-[52px] sm:min-h-0 ${
         selected
           ? 'border-phosphor bg-phosphor-faint border-glow-green'
           : 'border-terminal-border hover:border-terminal-border-bright hover:bg-terminal-bg-light'
@@ -190,46 +197,46 @@ export default function QuestionScreen({
   }, [onGoToQuestion]);
 
   return (
-    <div className="flex min-h-screen flex-col items-center justify-center p-6">
+    <div className="flex min-h-screen flex-col items-center justify-center px-4 py-6 sm:p-6">
       {/* Top bar */}
-      <div className="fixed top-0 left-0 right-0 border-b border-terminal-border bg-terminal-bg/95 px-6 py-3 flex items-center justify-between z-50">
-        <div className="flex items-center gap-4">
-          <span className="text-xs text-phosphor font-mono uppercase tracking-widest text-glow-green">
+      <div className="fixed top-0 left-0 right-0 border-b border-terminal-border bg-terminal-bg/95 px-3 sm:px-6 py-2 sm:py-3 flex items-center justify-between z-50 gap-2">
+        <div className="flex items-center gap-2 sm:gap-4 min-w-0">
+          <span className="text-xs text-phosphor font-mono uppercase tracking-widest text-glow-green shrink-0">
             SPECTRUM
           </span>
-          <span className="text-phosphor-faint">│</span>
-          <span className="text-xs text-amber font-mono uppercase tracking-wider">
+          <span className="text-phosphor-faint hidden sm:inline">│</span>
+          <span className="text-xs text-amber font-mono uppercase tracking-wider hidden sm:inline shrink-0">
             {testType}
           </span>
-          <span className="text-xs text-phosphor-dim font-mono uppercase">
+          <span className="text-xs text-phosphor-dim font-mono uppercase shrink-0">
             Q.{String(currentIndex + 1).padStart(2, '0')}/{totalQuestions}
           </span>
           <AsciiProgressBar progress={progress} />
         </div>
         <button
           onClick={() => setShowQuitConfirm(true)}
-          className="text-xs text-term-red-dim hover:text-term-red transition-colors duration-150 font-mono uppercase"
+          className="text-xs text-term-red-dim hover:text-term-red transition-colors duration-150 font-mono uppercase shrink-0 min-h-[36px] px-2 flex items-center"
         >
-          [ESC] END TEST
+          <span className="hidden sm:inline">[ESC] </span>END
         </button>
       </div>
 
       {/* Quit confirmation overlay */}
       {showQuitConfirm && (
-        <div className="fixed inset-0 z-[100] flex items-center justify-center bg-terminal-bg/90">
-          <div className="border border-term-red p-6 bg-terminal-bg max-w-sm text-center space-y-4">
+        <div className="fixed inset-0 z-[100] flex items-center justify-center bg-terminal-bg/90 px-4">
+          <div className="border border-term-red p-6 bg-terminal-bg w-full max-w-sm text-center space-y-4">
             <div className="text-sm text-term-red font-mono uppercase">{'>'} ABORT TEST?</div>
             <p className="text-xs text-phosphor-dim font-mono">Progress will be lost. {answeredCount}/{totalQuestions} answered.</p>
             <div className="flex gap-3 justify-center">
               <button
                 onClick={onQuit}
-                className="border border-term-red px-5 py-2 text-xs font-mono uppercase text-term-red hover:bg-term-red/20 transition-all"
+                className="border border-term-red px-5 py-3 sm:py-2 text-xs font-mono uppercase text-term-red hover:bg-term-red/20 transition-all min-h-[44px]"
               >
                 [Y] YES, END
               </button>
               <button
                 onClick={() => setShowQuitConfirm(false)}
-                className="border border-phosphor px-5 py-2 text-xs font-mono uppercase text-phosphor hover:bg-phosphor/10 transition-all"
+                className="border border-phosphor px-5 py-3 sm:py-2 text-xs font-mono uppercase text-phosphor hover:bg-phosphor/10 transition-all min-h-[44px]"
               >
                 [N] CONTINUE
               </button>
@@ -251,8 +258,8 @@ export default function QuestionScreen({
         />
       )}
 
-      {/* Question area */}
-      <div className={`w-full ${is7point ? 'max-w-[640px]' : hasLongLabels ? 'max-w-[620px]' : 'max-w-[560px]'}`}>
+      {/* Question area — pt accounts for fixed top bar (~44px mobile, ~52px desktop) */}
+      <div className={`w-full mt-[44px] sm:mt-[52px] ${is7point ? 'max-w-[640px]' : hasLongLabels ? 'max-w-[620px]' : 'max-w-[560px]'}`}>
         <AnimatePresence mode="wait">
           <motion.div
             key={question.id}
@@ -262,40 +269,40 @@ export default function QuestionScreen({
             transition={{ duration: 0.18, ease: 'easeOut' as const }}
           >
             {/* Question */}
-            <div className="mb-6 border border-terminal-border p-5">
+            <div className="mb-5 border border-terminal-border p-4 sm:p-5">
               <span className="text-xs font-mono uppercase tracking-wider text-amber text-glow-amber">
                 QUERY #{String(question.id).padStart(2, '0')}
               </span>
-              <h2 className="mt-3 text-base leading-relaxed text-phosphor text-glow-green">
+              <h2 className="mt-3 text-[15px] sm:text-base leading-relaxed text-phosphor text-glow-green">
                 {question.text}
               </h2>
             </div>
 
             {/* Answer options — adaptive layout */}
             {is7point ? (
-              /* 7-point Likert: top row of 4, bottom row of 3 centered */
+              /* 7-point Likert: 2-col on mobile, 4+3 on sm+ */
               <div className="space-y-2">
-                <div className="grid grid-cols-4 gap-2">
+                <div className="grid grid-cols-2 sm:grid-cols-4 gap-2">
                   {answerOptions.slice(0, 4).map((option) => (
                     <OptionButton key={option.key} option={option} selected={currentAnswer === option.value} onSelect={onAnswer} size="sm" />
                   ))}
                 </div>
-                <div className="grid grid-cols-3 gap-2 mx-auto" style={{ maxWidth: '75%' }}>
+                <div className="grid grid-cols-3 gap-2 sm:mx-auto" style={{ maxWidth: undefined }}>
                   {answerOptions.slice(4).map((option) => (
                     <OptionButton key={option.key} option={option} selected={currentAnswer === option.value} onSelect={onAnswer} size="sm" />
                   ))}
                 </div>
               </div>
             ) : is3option ? (
-              /* 3-option: centered row */
+              /* 3-option: always 3 cols — wide enough on mobile */
               <div className="grid grid-cols-3 gap-2">
                 {answerOptions.map((option) => (
                   <OptionButton key={option.key} option={option} selected={currentAnswer === option.value} onSelect={onAnswer} size={hasLongLabels ? 'sm' : 'md'} />
                 ))}
               </div>
             ) : (
-              /* 4-option: 2x2 grid */
-              <div className="grid grid-cols-2 gap-2">
+              /* 4-option: 1-col on mobile, 2x2 on sm+ */
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
                 {answerOptions.map((option) => (
                   <OptionButton key={option.key} option={option} selected={currentAnswer === option.value} onSelect={onAnswer} size={hasLongLabels ? 'sm' : 'md'} />
                 ))}
@@ -309,7 +316,7 @@ export default function QuestionScreen({
           <button
             onClick={onBack}
             disabled={currentIndex === 0}
-            className="text-xs font-mono text-phosphor-dim hover:text-phosphor disabled:opacity-20 transition-colors duration-150 uppercase"
+            className="text-sm sm:text-xs font-mono text-phosphor-dim hover:text-phosphor disabled:opacity-20 transition-colors duration-150 uppercase min-h-[44px] flex items-center px-1"
           >
             {'<'} BACK
           </button>
@@ -317,7 +324,7 @@ export default function QuestionScreen({
           {isLastQuestion && allAnswered ? (
             <button
               onClick={() => setShowReview(true)}
-              className="border border-phosphor bg-phosphor-faint px-5 py-2 text-xs font-mono uppercase tracking-wider text-phosphor text-glow-green transition-all duration-150 hover:bg-phosphor/20 border-glow-green"
+              className="border border-phosphor bg-phosphor-faint px-4 sm:px-5 py-2.5 sm:py-2 text-xs font-mono uppercase tracking-wider text-phosphor text-glow-green transition-all duration-150 hover:bg-phosphor/20 border-glow-green min-h-[44px]"
             >
               {'>'} COMPILE RESULTS
             </button>
@@ -325,14 +332,14 @@ export default function QuestionScreen({
             <button
               onClick={onForward}
               disabled={currentAnswer === undefined}
-              className="text-xs font-mono text-phosphor-dim hover:text-phosphor disabled:opacity-20 transition-colors duration-150 uppercase"
+              className="text-sm sm:text-xs font-mono text-phosphor-dim hover:text-phosphor disabled:opacity-20 transition-colors duration-150 uppercase min-h-[44px] flex items-center px-1"
             >
               NEXT {'>'}
             </button>
           )}
         </div>
 
-        <p className="mt-4 text-center text-xs text-phosphor-faint font-mono">
+        <p className="mt-4 text-center text-xs text-phosphor-faint font-mono hidden sm:block">
           [1-{maxKey}] answer &middot; [&larr;&rarr;] navigate &middot; [ENTER] submit
         </p>
       </div>
