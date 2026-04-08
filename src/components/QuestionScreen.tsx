@@ -215,7 +215,7 @@ export default function QuestionScreen({
         </div>
         <button
           onClick={() => setShowQuitConfirm(true)}
-          className="text-xs text-term-red-dim hover:text-term-red transition-colors duration-150 font-mono uppercase shrink-0 min-h-[36px] px-2 flex items-center"
+          className="text-xs text-term-red hover:text-term-red transition-colors duration-150 font-mono uppercase shrink-0 min-h-[36px] px-2 flex items-center"
         >
           <span className="hidden sm:inline">[ESC] </span>END
         </button>
@@ -316,7 +316,7 @@ export default function QuestionScreen({
           <button
             onClick={onBack}
             disabled={currentIndex === 0}
-            className="text-sm sm:text-xs font-mono text-phosphor-dim hover:text-phosphor disabled:opacity-20 transition-colors duration-150 uppercase min-h-[44px] flex items-center px-1"
+            className="text-sm sm:text-xs font-mono text-phosphor hover:text-phosphor disabled:opacity-20 transition-colors duration-150 uppercase min-h-[44px] flex items-center px-1"
           >
             {'<'} BACK
           </button>
@@ -332,14 +332,14 @@ export default function QuestionScreen({
             <button
               onClick={onForward}
               disabled={currentAnswer === undefined}
-              className="text-sm sm:text-xs font-mono text-phosphor-dim hover:text-phosphor disabled:opacity-20 transition-colors duration-150 uppercase min-h-[44px] flex items-center px-1"
+              className="text-sm sm:text-xs font-mono text-phosphor hover:text-phosphor disabled:opacity-20 transition-colors duration-150 uppercase min-h-[44px] flex items-center px-1"
             >
               NEXT {'>'}
             </button>
           )}
         </div>
 
-        <p className="mt-4 text-center text-xs text-phosphor-faint font-mono hidden sm:block">
+        <p className="mt-4 text-center text-xs text-phosphor-dim font-mono hidden sm:block">
           [1-{maxKey}] answer &middot; [&larr;&rarr;] navigate &middot; [ENTER] submit
         </p>
       </div>
