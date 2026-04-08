@@ -217,7 +217,7 @@ export default function QuestionScreen({
           onClick={() => setShowQuitConfirm(true)}
           className="text-xs text-phosphor hover:text-phosphor transition-colors duration-150 font-mono uppercase shrink-0 min-h-[36px] px-2 flex items-center"
         >
-          <span className="hidden sm:inline">[ESC] </span>END
+[ESC]
         </button>
       </div>
 
