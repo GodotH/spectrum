@@ -138,19 +138,17 @@ export default function WelcomeScreen({ onStart, onResume, onHistory }: Props) {
             {'>'} SPECTRUM v1.0
           </motion.div>
 
-          {/* Loading bar */}
-          {bootPhase >= 1 && (
+          {/* Loading bar — visible only during loading phase */}
+          {bootPhase >= 1 && bootPhase < 2 && (
             <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ duration: 0.1 }} className="text-phosphor-dim">
               {'>'} Autism Detection Toolkit{' '}
-              {loadProgress < 100 ? (
-                <span className="text-phosphor">
-                  [{'█'.repeat(Math.floor(loadProgress / 5))}{'░'.repeat(20 - Math.floor(loadProgress / 5))}] {loadProgress}%
-                </span>
-              ) : null}
+              <span className="text-phosphor">
+                [{'█'.repeat(Math.floor(loadProgress / 5))}{'░'.repeat(20 - Math.floor(loadProgress / 5))}] {loadProgress}%
+              </span>
             </motion.div>
           )}
 
-          {/* Activated */}
+          {/* Activated — replaces loading bar */}
           {bootPhase >= 2 && (
             <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ duration: 0.15 }} className="text-phosphor text-glow-green">
               {'>'} Autism Detection Toolkit Activated
