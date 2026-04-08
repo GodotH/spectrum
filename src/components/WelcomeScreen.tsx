@@ -128,7 +128,7 @@ export default function WelcomeScreen({ onStart, onResume, onHistory }: Props) {
   };
 
   return (
-    <div className="flex min-h-screen items-center justify-center px-4 py-6 sm:p-6">
+    <div className="flex min-h-screen items-start justify-center px-4 pt-[15vh] pb-6 sm:pt-[18vh] sm:px-6">
       <div className="w-full max-w-[600px]">
         {/* Single terminal window */}
         <div className="border border-terminal-border p-5 border-glow-green font-mono text-xs leading-6">
