@@ -18,7 +18,9 @@ export default function WelcomeScreen({ onStart, onResume, onHistory }: Props) {
   const [disclaimerAccepted, setDisclaimerAccepted] = useState(() => localStorage.getItem('spectrum_disclaimer') === 'accepted');
   const [showDisclaimer, setShowDisclaimer] = useState(false);
   const hasHistory = getResults().length > 0;
-  const [bootDone, setBootDone] = useState(false);
+  const [bootPhase, setBootPhase] = useState(0); // 0=spectrum, 1=loading, 2=activated, 3=ready
+  const bootDone = bootPhase >= 3;
+  const [loadProgress, setLoadProgress] = useState(0);
   const [savedState, setSavedState] = useState<InProgressState | null>(null);
   const [openTooltip, setOpenTooltip] = useState<string | null>(null);
   const tooltipRef = useRef<HTMLDivElement | null>(null);
@@ -43,10 +45,30 @@ export default function WelcomeScreen({ onStart, onResume, onHistory }: Props) {
     };
   }, [openTooltip]);
 
+  // Boot sequence animation
   useEffect(() => {
-    const timer = setTimeout(() => setBootDone(true), 600);
-    return () => clearTimeout(timer);
+    // Phase 1: start loading bar after SPECTRUM appears
+    const t1 = setTimeout(() => setBootPhase(1), 400);
+    return () => clearTimeout(t1);
   }, []);
+
+  useEffect(() => {
+    if (bootPhase !== 1) return;
+    let progress = 0;
+    const interval = setInterval(() => {
+      progress += Math.random() * 18 + 6;
+      if (progress >= 100) {
+        progress = 100;
+        clearInterval(interval);
+        setLoadProgress(100);
+        setTimeout(() => setBootPhase(2), 150);
+        setTimeout(() => setBootPhase(3), 700);
+      } else {
+        setLoadProgress(Math.floor(progress));
+      }
+    }, 70);
+    return () => clearInterval(interval);
+  }, [bootPhase]);
 
   const toggleTest = (type: TestType) => {
     setSelectedTests(prev => {
@@ -115,9 +137,25 @@ export default function WelcomeScreen({ onStart, onResume, onHistory }: Props) {
           <motion.div custom={0} initial="hidden" animate="visible" variants={lineVariants} className="text-phosphor text-glow-green">
             {'>'} SPECTRUM v1.0
           </motion.div>
-          <motion.div custom={1} initial="hidden" animate="visible" variants={lineVariants} className="text-phosphor-dim">
-            {'>'} Autism Detection Toolkit Activated
-          </motion.div>
+
+          {/* Loading bar */}
+          {bootPhase >= 1 && (
+            <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ duration: 0.1 }} className="text-phosphor-dim">
+              {'>'} Autism Detection Toolkit{' '}
+              {loadProgress < 100 ? (
+                <span className="text-phosphor">
+                  [{'█'.repeat(Math.floor(loadProgress / 5))}{'░'.repeat(20 - Math.floor(loadProgress / 5))}] {loadProgress}%
+                </span>
+              ) : null}
+            </motion.div>
+          )}
+
+          {/* Activated */}
+          {bootPhase >= 2 && (
+            <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ duration: 0.15 }} className="text-phosphor text-glow-green">
+              {'>'} Autism Detection Toolkit Activated
+            </motion.div>
+          )}
 
           {/* Resume panel */}
           {bootDone && savedState && (
@@ -214,7 +252,7 @@ export default function WelcomeScreen({ onStart, onResume, onHistory }: Props) {
                         [?]
                       </button>
                       {/* Tooltip — hover on desktop, tap-toggle on mobile */}
-                      <div className={`absolute left-0 right-0 top-full mt-1 z-50 ${isTooltipOpen ? 'block' : 'hidden group-hover:block'}`}>
+                      <div className={`absolute left-0 right-0 bottom-full mb-1 z-50 ${isTooltipOpen ? 'block' : 'hidden group-hover:block'}`}>
                         <div className="border border-phosphor/50 bg-terminal-bg p-3 text-[10px] leading-relaxed text-phosphor-dim font-mono shadow-lg shadow-phosphor/5">
                           <span className="text-amber">{'>'}</span> {item.tooltip}
                         </div>
