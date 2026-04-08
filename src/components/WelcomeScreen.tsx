@@ -164,8 +164,8 @@ export default function WelcomeScreen({ onStart, onResume, onHistory }: Props) {
             <div className="text-phosphor text-glow-green">
               {'>'}{' '}
               {!toolkitDone
-                ? <><span className="text-amber">{spinnerChars[spinnerFrame]}</span> Autism Detection Toolkit</>
-                : <>Autism Detection Toolkit Activated{showChecks && <span className="text-amber"> ✓</span>}</>
+                ? <>Autism Detection Toolkit <span className="text-amber">{spinnerChars[spinnerFrame]}</span></>
+                : <>Autism Detection Toolkit Activated{showChecks && ' ✓'}</>
               }
             </div>
           )}
@@ -175,8 +175,8 @@ export default function WelcomeScreen({ onStart, onResume, onHistory }: Props) {
             <div className="text-phosphor text-glow-green">
               {'>'}{' '}
               {!privacyDone
-                ? <><span className="text-amber">{spinnerChars[spinnerFrame]}</span> Privacy Mode</>
-                : <>Privacy Mode Activated{showChecks && <span className="text-amber"> ✓</span>}</>
+                ? <>Privacy Mode <span className="text-amber">{spinnerChars[spinnerFrame]}</span></>
+                : <>Privacy Mode Activated{showChecks && ' ✓'}</>
               }
             </div>
           )}
