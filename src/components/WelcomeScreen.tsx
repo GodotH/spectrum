@@ -311,7 +311,7 @@ export default function WelcomeScreen({ onStart, onResume, onHistory }: Props) {
                     <p>This application is provided for <span className="text-phosphor">informational and educational purposes only</span>. It is not a medical device and does not provide clinical diagnoses.</p>
                     <p>Results should be interpreted by a qualified healthcare professional. No screening tool can replace a comprehensive diagnostic assessment.</p>
                     <p>All questionnaires are the intellectual property of their respective authors and institutions. This implementation is for personal screening use only and is not licensed for commercial or clinical deployment without appropriate permissions.</p>
-                    <p className="text-phosphor-faint">AQ-50 &copy; Baron-Cohen et al. | CAT-Q &copy; Hull et al. | RAADS-R &copy; Ritvo et al. | EQ/SQ &copy; Baron-Cohen &amp; Wheelwright | RBQ-2A &copy; Barrett et al.</p>
+                    <p className="text-phosphor">AQ-50 &copy; Baron-Cohen et al. | CAT-Q &copy; Hull et al. | RAADS-R &copy; Ritvo et al. | EQ/SQ &copy; Baron-Cohen &amp; Wheelwright | RBQ-2A &copy; Barrett et al.</p>
                   </div>
                   <div className="flex gap-3 mt-4">
                     <button
