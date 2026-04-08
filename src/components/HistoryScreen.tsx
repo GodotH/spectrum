@@ -39,7 +39,7 @@ export default function HistoryScreen({ onHome }: Props) {
   };
 
   return (
-    <div className="flex min-h-screen flex-col items-center p-6">
+    <div className="flex min-h-screen flex-col items-center px-4 py-6 sm:p-6">
       <div className="w-full max-w-[560px] space-y-4">
         {/* Header */}
         <div className="flex items-center justify-between border-b border-terminal-border pb-3">
@@ -51,7 +51,7 @@ export default function HistoryScreen({ onHome }: Props) {
           </div>
           <button
             onClick={onHome}
-            className="text-xs font-mono text-phosphor-dim hover:text-cyan transition-colors duration-150 uppercase"
+            className="text-xs font-mono text-phosphor-dim hover:text-cyan transition-colors duration-150 uppercase min-h-[44px] px-2 flex items-center"
           >
             [ESC] BACK
           </button>
@@ -69,8 +69,8 @@ export default function HistoryScreen({ onHome }: Props) {
           </motion.div>
         ) : (
           <div className="space-y-2">
-            {/* Table header */}
-            <div className="flex items-center gap-2 px-3 py-1 text-xs font-mono uppercase text-phosphor-faint border-b border-terminal-border">
+            {/* Table header — desktop only */}
+            <div className="hidden sm:flex items-center gap-2 px-3 py-1 text-xs font-mono uppercase text-phosphor-faint border-b border-terminal-border">
               <span className="w-24">DATE</span>
               <span className="flex-1">SUBJECT</span>
               <span className="w-14 text-center">TEST</span>
@@ -87,40 +87,84 @@ export default function HistoryScreen({ onHome }: Props) {
                   initial={{ opacity: 0, y: 4 }}
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ delay: i * 0.03, duration: 0.15, ease: 'easeOut' as const }}
-                  className="flex items-center gap-2 border border-terminal-border px-3 py-2 hover:border-terminal-border-bright transition-colors duration-150"
+                  className="border border-terminal-border hover:border-terminal-border-bright transition-colors duration-150"
                 >
-                  <span className="w-24 text-xs text-phosphor-faint font-mono truncate">
-                    {new Date(result.date).toLocaleDateString()}
-                  </span>
-                  <span className="flex-1 text-xs text-phosphor-dim font-mono truncate">
-                    {result.userName}
-                  </span>
-                  <span className="w-14 text-xs text-cyan-dim font-mono text-center">
-                    {result.testType}
-                  </span>
-                  <span className="w-16 text-xs text-phosphor font-mono text-right tabular-nums">
-                    {result.totalScore}/{result.maxScore}
-                  </span>
-                  <span className={`w-12 text-xs font-mono text-center font-bold ${tag.color}`}>
-                    {tag.label}
-                  </span>
-                  <span className="w-24 flex gap-1 justify-end">
-                    <button
-                      onClick={() => exportResultPDF(result)}
-                      className="text-xs font-mono text-phosphor-dim hover:text-cyan transition-colors duration-150 px-1"
-                      title="Export PDF"
-                    >
-                      PDF
-                    </button>
-                    <span className="text-phosphor-faint">|</span>
-                    <button
-                      onClick={() => handleDelete(result.id)}
-                      className="text-xs font-mono text-term-red-dim hover:text-term-red transition-colors duration-150 px-1"
-                      title="Delete"
-                    >
-                      DEL
-                    </button>
-                  </span>
+                  {/* Desktop row */}
+                  <div className="hidden sm:flex items-center gap-2 px-3 py-2">
+                    <span className="w-24 text-xs text-phosphor-faint font-mono truncate">
+                      {new Date(result.date).toLocaleDateString()}
+                    </span>
+                    <span className="flex-1 text-xs text-phosphor-dim font-mono truncate">
+                      {result.userName}
+                    </span>
+                    <span className="w-14 text-xs text-cyan-dim font-mono text-center">
+                      {result.testType}
+                    </span>
+                    <span className="w-16 text-xs text-phosphor font-mono text-right tabular-nums">
+                      {result.totalScore}/{result.maxScore}
+                    </span>
+                    <span className={`w-12 text-xs font-mono text-center font-bold ${tag.color}`}>
+                      {tag.label}
+                    </span>
+                    <span className="w-24 flex gap-1 justify-end">
+                      <button
+                        onClick={() => exportResultPDF(result)}
+                        className="text-xs font-mono text-phosphor-dim hover:text-cyan transition-colors duration-150 px-1"
+                        title="Export PDF"
+                      >
+                        PDF
+                      </button>
+                      <span className="text-phosphor-faint">|</span>
+                      <button
+                        onClick={() => handleDelete(result.id)}
+                        className="text-xs font-mono text-term-red-dim hover:text-term-red transition-colors duration-150 px-1"
+                        title="Delete"
+                      >
+                        DEL
+                      </button>
+                    </span>
+                  </div>
+
+                  {/* Mobile card */}
+                  <div className="flex sm:hidden items-start gap-3 px-3 py-3">
+                    <div className="flex-1 min-w-0">
+                      <div className="flex items-center gap-2 mb-0.5">
+                        <span className="text-xs text-phosphor-dim font-mono truncate">
+                          {result.userName}
+                        </span>
+                        <span className="text-xs text-cyan-dim font-mono shrink-0">
+                          {result.testType}
+                        </span>
+                      </div>
+                      <div className="flex items-center gap-2">
+                        <span className="text-[10px] text-phosphor-faint font-mono">
+                          {new Date(result.date).toLocaleDateString()}
+                        </span>
+                        <span className="text-xs text-phosphor font-mono tabular-nums">
+                          {result.totalScore}/{result.maxScore}
+                        </span>
+                        <span className={`text-xs font-mono font-bold ${tag.color}`}>
+                          {tag.label}
+                        </span>
+                      </div>
+                    </div>
+                    <div className="flex gap-3 shrink-0 items-center">
+                      <button
+                        onClick={() => exportResultPDF(result)}
+                        className="text-xs font-mono text-phosphor-dim hover:text-cyan transition-colors duration-150 min-h-[44px] px-2 flex items-center"
+                        title="Export PDF"
+                      >
+                        PDF
+                      </button>
+                      <button
+                        onClick={() => handleDelete(result.id)}
+                        className="text-xs font-mono text-term-red-dim hover:text-term-red transition-colors duration-150 min-h-[44px] px-2 flex items-center"
+                        title="Delete"
+                      >
+                        DEL
+                      </button>
+                    </div>
+                  </div>
                 </motion.div>
               );
             })}

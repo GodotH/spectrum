@@ -59,7 +59,6 @@ function ScoreContextBar({ testType, score }: { testType: TestType; score: numbe
   // Determine color for each bar character based on reference zones
   const getCharColor = (charIdx: number): NormReference['color'] => {
     const charRatio = charIdx / (barWidth - 1);
-    // Find which zone this character falls in
     for (let i = sortedRefs.length - 1; i >= 0; i--) {
       const refPos = toPosition(sortedRefs[i].value);
       if (charRatio >= refPos) return sortedRefs[i].color;
@@ -79,7 +78,6 @@ function ScoreContextBar({ testType, score }: { testType: TestType; score: numbe
     }
   }
 
-  // Build reference marker line — place labels at their positions
   type Marker = { charIdx: number; label: string; color: NormReference['color'] };
   const markers: Marker[] = sortedRefs.map(ref => ({
     charIdx: Math.round(toPosition(ref.value) * (barWidth - 1)),
@@ -87,7 +85,6 @@ function ScoreContextBar({ testType, score }: { testType: TestType; score: numbe
     color: ref.color,
   }));
 
-  // Build the tick line: place '|' at each marker position
   const tickLine: { char: string; colorClass: string }[] = Array.from({ length: barWidth }, () => ({
     char: ' ',
     colorClass: 'text-phosphor-faint',
@@ -98,7 +95,6 @@ function ScoreContextBar({ testType, score }: { testType: TestType; score: numbe
     }
   }
 
-  // Build the score pointer line
   const pointerLine: { char: string; colorClass: string }[] = Array.from({ length: barWidth }, () => ({
     char: ' ',
     colorClass: 'text-phosphor-faint',
@@ -107,44 +103,60 @@ function ScoreContextBar({ testType, score }: { testType: TestType; score: numbe
     pointerLine[scoreCharIdx] = { char: '▲', colorClass: 'text-white' };
   }
 
-  // Direction labels
   const leftLabel = norm.inverse ? 'MORE AUTISTIC' : 'NEUROTYPICAL';
   const rightLabel = norm.inverse ? 'NEUROTYPICAL' : 'MORE AUTISTIC';
 
+  // Score percentage for mobile fallback display
+  const scorePct = Math.round((score / barMax) * 100);
+
   return (
-    <div className="mt-3 space-y-0 font-mono text-[10px] leading-tight select-none">
+    <div className="mt-3 font-mono text-[10px] leading-tight select-none">
       <div className="text-phosphor-dim text-[10px] mb-1">{'>'} CLINICAL CONTEXT:</div>
-      {/* Direction labels */}
-      <div className="flex justify-between" style={{ width: `${barWidth}ch` }}>
-        <span className={norm.inverse ? 'text-term-red-dim' : 'text-phosphor-dim'}>{leftLabel}</span>
-        <span className={norm.inverse ? 'text-phosphor-dim' : 'text-term-red-dim'}>{rightLabel}</span>
+
+      {/* Full ASCII bar — hidden on very small screens, shown via horizontal scroll wrapper */}
+      <div className="overflow-x-auto -mx-1 px-1 pb-1">
+        <div style={{ minWidth: `${barWidth}ch` }}>
+          {/* Direction labels */}
+          <div className="flex justify-between" style={{ width: `${barWidth}ch` }}>
+            <span className={norm.inverse ? 'text-term-red-dim' : 'text-phosphor-dim'}>{leftLabel}</span>
+            <span className={norm.inverse ? 'text-phosphor-dim' : 'text-term-red-dim'}>{rightLabel}</span>
+          </div>
+          {/* Reference tick marks */}
+          <div className="whitespace-pre" style={{ width: `${barWidth}ch` }}>
+            {tickLine.map((t, i) => (
+              <span key={i} className={t.colorClass}>{t.char}</span>
+            ))}
+          </div>
+          {/* The bar itself */}
+          <div className="whitespace-pre" style={{ width: `${barWidth}ch` }}>
+            {barChars.map((b, i) => (
+              <span key={i} className={b.colorClass}>{b.char}</span>
+            ))}
+          </div>
+          {/* Score pointer */}
+          <div className="whitespace-pre" style={{ width: `${barWidth}ch` }}>
+            {pointerLine.map((p, i) => (
+              <span key={i} className={p.colorClass}>{p.char}</span>
+            ))}
+          </div>
+          {/* Score value label */}
+          <div className="whitespace-pre text-white font-bold" style={{ width: `${barWidth}ch` }}>
+            {(() => {
+              const label = `YOU: ${score}`;
+              const startIdx = Math.max(0, Math.min(scoreCharIdx - Math.floor(label.length / 2), barWidth - label.length));
+              return ' '.repeat(startIdx) + label;
+            })()}
+          </div>
+        </div>
       </div>
-      {/* Reference tick marks */}
-      <div className="whitespace-pre" style={{ width: `${barWidth}ch` }}>
-        {tickLine.map((t, i) => (
-          <span key={i} className={t.colorClass}>{t.char}</span>
-        ))}
+
+      {/* Mobile compact score position summary */}
+      <div className="flex items-center gap-2 mt-1 sm:hidden">
+        <span className="text-phosphor-dim">{'>'} YOUR SCORE:</span>
+        <span className="text-white font-bold">{score}/{barMax}</span>
+        <span className="text-phosphor-faint">({scorePct}%)</span>
       </div>
-      {/* The bar itself */}
-      <div className="whitespace-pre" style={{ width: `${barWidth}ch` }}>
-        {barChars.map((b, i) => (
-          <span key={i} className={b.colorClass}>{b.char}</span>
-        ))}
-      </div>
-      {/* Score pointer */}
-      <div className="whitespace-pre" style={{ width: `${barWidth}ch` }}>
-        {pointerLine.map((p, i) => (
-          <span key={i} className={p.colorClass}>{p.char}</span>
-        ))}
-      </div>
-      {/* Score value label centered on pointer */}
-      <div className="whitespace-pre text-white font-bold" style={{ width: `${barWidth}ch` }}>
-        {(() => {
-          const label = `YOU: ${score}`;
-          const startIdx = Math.max(0, Math.min(scoreCharIdx - Math.floor(label.length / 2), barWidth - label.length));
-          return ' '.repeat(startIdx) + label;
-        })()}
-      </div>
+
       {/* Reference labels */}
       <div className="mt-1 flex flex-wrap gap-x-3 gap-y-0.5">
         {sortedRefs.map((ref, i) => (
@@ -232,7 +244,7 @@ export default function ResultsScreen({ result, onHome, onHistory, onStartTest, 
   };
 
   return (
-    <div className="flex min-h-screen items-center justify-center p-6">
+    <div className="flex min-h-screen items-center justify-center px-4 py-6 sm:p-6">
       <div className="w-full max-w-[560px] space-y-4">
         {/* Header */}
         <div className="border border-terminal-border p-5 border-glow-green">
@@ -297,20 +309,25 @@ export default function ResultsScreen({ result, onHome, onHistory, onStartTest, 
             initial="hidden"
             animate="visible"
             variants={lineVariants}
-            className="border border-terminal-border p-5"
+            className="border border-terminal-border p-4 sm:p-5"
           >
             <div className="text-xs text-phosphor-dim font-mono mb-3">{'>'} SUBSCALE BREAKDOWN:</div>
-            <div className="space-y-2">
+            <div className="space-y-2.5 sm:space-y-2">
               {Object.keys(result.subscaleScores).map(subscale => {
                 const score = result.subscaleScores![subscale];
                 const labels = getSubscaleLabels(result.testType);
                 const maxScores = getSubscaleMax(result.testType);
                 const maxVal = maxScores[subscale] || 10;
                 return (
-                  <div key={subscale} className="flex items-center gap-2 font-mono text-xs">
-                    <span className="w-40 text-phosphor-dim truncate">{labels[subscale] || subscale}</span>
-                    <AsciiBar value={score} max={maxVal} color="text-cyan" />
-                    <span className="text-cyan-dim w-10 text-right">{score}/{maxVal}</span>
+                  <div key={subscale} className="font-mono">
+                    {/* Mobile: label on its own line */}
+                    <div className="flex items-center justify-between gap-2">
+                      <span className="text-xs text-phosphor-dim truncate flex-1 min-w-0">{labels[subscale] || subscale}</span>
+                      <span className="text-xs text-cyan-dim shrink-0">{score}/{maxVal}</span>
+                    </div>
+                    <div className="mt-1">
+                      <AsciiBar value={score} max={maxVal} color="text-cyan" />
+                    </div>
                   </div>
                 );
               })}
@@ -324,23 +341,23 @@ export default function ResultsScreen({ result, onHome, onHistory, onStartTest, 
           initial="hidden"
           animate="visible"
           variants={lineVariants}
-          className="flex gap-2"
+          className="grid grid-cols-1 sm:grid-cols-3 gap-2"
         >
           <button
             onClick={handleExportClick}
-            className="flex-1 border border-terminal-border py-2.5 text-xs font-mono uppercase text-phosphor-dim hover:text-phosphor hover:border-terminal-border-bright transition-all duration-150"
+            className="border border-terminal-border py-3 sm:py-2.5 text-xs font-mono uppercase text-phosphor-dim hover:text-phosphor hover:border-terminal-border-bright transition-all duration-150 min-h-[44px]"
           >
             [F1] EXPORT PDF
           </button>
           <button
             onClick={onHistory}
-            className="flex-1 border border-terminal-border py-2.5 text-xs font-mono uppercase text-phosphor-dim hover:text-phosphor hover:border-terminal-border-bright transition-all duration-150"
+            className="border border-terminal-border py-3 sm:py-2.5 text-xs font-mono uppercase text-phosphor-dim hover:text-phosphor hover:border-terminal-border-bright transition-all duration-150 min-h-[44px]"
           >
             [F2] HISTORY
           </button>
           <button
             onClick={onHome}
-            className="flex-1 border border-phosphor bg-phosphor-faint py-2.5 text-xs font-mono uppercase text-phosphor text-glow-green hover:bg-phosphor/20 transition-all duration-150 border-glow-green"
+            className="border border-phosphor bg-phosphor-faint py-3 sm:py-2.5 text-xs font-mono uppercase text-phosphor text-glow-green hover:bg-phosphor/20 transition-all duration-150 border-glow-green min-h-[44px]"
           >
             [F3] NEW TEST
           </button>

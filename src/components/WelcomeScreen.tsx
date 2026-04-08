@@ -20,10 +20,28 @@ export default function WelcomeScreen({ onStart, onResume, onHistory }: Props) {
   const hasHistory = getResults().length > 0;
   const [bootDone, setBootDone] = useState(false);
   const [savedState, setSavedState] = useState<InProgressState | null>(null);
+  const [openTooltip, setOpenTooltip] = useState<string | null>(null);
+  const tooltipRef = useRef<HTMLDivElement | null>(null);
 
   useEffect(() => {
     setSavedState(getInProgress());
   }, []);
+
+  // Close tooltip on outside tap
+  useEffect(() => {
+    if (!openTooltip) return;
+    const handler = (e: MouseEvent | TouchEvent) => {
+      if (tooltipRef.current && !tooltipRef.current.contains(e.target as Node)) {
+        setOpenTooltip(null);
+      }
+    };
+    document.addEventListener('mousedown', handler);
+    document.addEventListener('touchstart', handler);
+    return () => {
+      document.removeEventListener('mousedown', handler);
+      document.removeEventListener('touchstart', handler);
+    };
+  }, [openTooltip]);
 
   useEffect(() => {
     const timer = setTimeout(() => setBootDone(true), 600);
@@ -88,7 +106,7 @@ export default function WelcomeScreen({ onStart, onResume, onHistory }: Props) {
   };
 
   return (
-    <div className="flex min-h-screen items-center justify-center p-6">
+    <div className="flex min-h-screen items-center justify-center px-4 py-6 sm:p-6">
       <div className="w-full max-w-[600px]">
         {/* Single terminal window */}
         <div className="border border-terminal-border p-5 border-glow-green font-mono text-xs leading-6">
@@ -167,14 +185,15 @@ export default function WelcomeScreen({ onStart, onResume, onHistory }: Props) {
               <div className="text-phosphor-dim">{'>'} SELECT TESTS:</div>
 
               {/* Test grid */}
-              <div className="grid grid-cols-2 gap-2 my-2">
+              <div className="grid grid-cols-1 xs:grid-cols-2 gap-2 my-2" ref={tooltipRef}>
                 {TEST_MENU.map((item, idx) => {
                   const isSelected = selectedTests.has(item.type);
+                  const isTooltipOpen = openTooltip === item.type;
                   return (
                     <div key={item.type} className="relative group">
                       <button
                         onClick={() => toggleTest(item.type)}
-                        className={`w-full border p-2.5 text-left transition-all duration-150 ${
+                        className={`w-full border p-3 text-left transition-all duration-150 min-h-[52px] ${
                           isSelected
                             ? 'border-phosphor bg-phosphor-faint border-glow-green'
                             : 'border-terminal-border hover:border-terminal-border-bright'
@@ -186,7 +205,16 @@ export default function WelcomeScreen({ onStart, onResume, onHistory }: Props) {
                         </div>
                         <div className="text-[10px] text-phosphor-dim opacity-60">{item.desc}</div>
                       </button>
-                      <div className="absolute left-0 right-0 top-full mt-1 z-50 hidden group-hover:block">
+                      {/* Info button — tap to toggle tooltip on mobile */}
+                      <button
+                        aria-label={`Info: ${item.label}`}
+                        onClick={e => { e.stopPropagation(); setOpenTooltip(isTooltipOpen ? null : item.type); }}
+                        className="absolute top-1.5 right-1.5 text-[9px] text-phosphor-faint hover:text-phosphor-dim font-mono px-1 py-0.5 border border-transparent hover:border-phosphor-faint transition-colors"
+                      >
+                        [?]
+                      </button>
+                      {/* Tooltip — hover on desktop, tap-toggle on mobile */}
+                      <div className={`absolute left-0 right-0 top-full mt-1 z-50 ${isTooltipOpen ? 'block' : 'hidden group-hover:block'}`}>
                         <div className="border border-phosphor/50 bg-terminal-bg p-3 text-[10px] leading-relaxed text-phosphor-dim font-mono shadow-lg shadow-phosphor/5">
                           <span className="text-amber">{'>'}</span> {item.tooltip}
                         </div>
@@ -205,7 +233,7 @@ export default function WelcomeScreen({ onStart, onResume, onHistory }: Props) {
                 <button
                   onClick={() => disclaimerAccepted ? handleStart() : setShowDisclaimer(true)}
                   disabled={selectedTests.size === 0}
-                  className="w-full border border-phosphor bg-phosphor-faint py-2.5 mt-2 uppercase tracking-wider text-phosphor text-glow-green transition-all duration-150 hover:bg-phosphor/20 disabled:opacity-30 disabled:cursor-not-allowed border-glow-green"
+                  className="w-full border border-phosphor bg-phosphor-faint py-3 sm:py-2.5 mt-2 uppercase tracking-wider text-phosphor text-glow-green transition-all duration-150 hover:bg-phosphor/20 disabled:opacity-30 disabled:cursor-not-allowed border-glow-green min-h-[48px]"
                 >
                   {'>'} {selectedTests.size > 1 ? 'INITIALIZE BATTERY' : 'INITIALIZE TEST'}
                 </button>

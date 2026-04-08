@@ -80,7 +80,7 @@ export default function ExportDialog({ currentResult, allResults, onClose }: Pro
         animate={{ opacity: 1 }}
         exit={{ opacity: 0 }}
         transition={{ duration: 0.15 }}
-        className="fixed inset-0 z-50 flex items-center justify-center bg-black/70"
+        className="fixed inset-0 z-50 flex items-end sm:items-center justify-center bg-black/70 p-0 sm:p-4"
         onClick={onClose}
       >
         <motion.div
@@ -88,7 +88,7 @@ export default function ExportDialog({ currentResult, allResults, onClose }: Pro
           animate={{ opacity: 1, scale: 1, y: 0 }}
           exit={{ opacity: 0, scale: 0.95, y: 8 }}
           transition={{ duration: 0.15, ease: 'easeOut' as const }}
-          className="w-full max-w-[520px] mx-4 border border-terminal-border bg-terminal-bg border-glow-green"
+          className="w-full sm:max-w-[520px] border border-terminal-border bg-terminal-bg border-glow-green max-h-[90vh] flex flex-col"
           onClick={e => e.stopPropagation()}
         >
           {/* Header */}
@@ -119,7 +119,7 @@ export default function ExportDialog({ currentResult, allResults, onClose }: Pro
           </div>
 
           {/* Results list */}
-          <div className="px-5 py-3 max-h-[300px] overflow-y-auto space-y-1">
+          <div className="px-4 sm:px-5 py-3 flex-1 overflow-y-auto space-y-1 min-h-0">
             {allResults.map(result => {
               const isChecked = selected.has(result.id);
               const isCurrent = result.id === currentResult.id;
@@ -129,40 +129,36 @@ export default function ExportDialog({ currentResult, allResults, onClose }: Pro
                 <button
                   key={result.id}
                   onClick={() => toggle(result.id)}
-                  className={`w-full flex items-center gap-2 px-3 py-2 text-left font-mono transition-colors duration-150 border ${
+                  className={`w-full flex items-center gap-2 px-3 py-2.5 sm:py-2 text-left font-mono transition-colors duration-150 border min-h-[44px] ${
                     isChecked
                       ? 'border-terminal-border-bright bg-phosphor-faint'
                       : 'border-terminal-border hover:border-terminal-border-bright'
                   }`}
                 >
                   {/* Checkbox */}
-                  <span className={`text-xs ${isChecked ? 'text-phosphor' : 'text-phosphor-faint'}`}>
+                  <span className={`text-xs shrink-0 ${isChecked ? 'text-phosphor' : 'text-phosphor-faint'}`}>
                     {isChecked ? '[X]' : '[ ]'}
                   </span>
 
-                  {/* Date */}
-                  <span className="text-xs text-phosphor-faint w-20 shrink-0">
-                    {new Date(result.date).toLocaleDateString()}
+                  {/* Main info block */}
+                  <span className="flex-1 min-w-0">
+                    <span className="text-xs text-phosphor-dim truncate block">
+                      {result.userName}
+                      <span className="text-cyan-dim ml-1">·{result.testType}</span>
+                    </span>
+                    <span className="text-[10px] text-phosphor-faint block">
+                      {new Date(result.date).toLocaleDateString()}
+                    </span>
                   </span>
 
-                  {/* Test type */}
-                  <span className="text-xs text-cyan-dim w-14 shrink-0 text-center">
-                    {result.testType}
-                  </span>
-
-                  {/* Subject */}
-                  <span className="text-xs text-phosphor-dim flex-1 truncate">
-                    {result.userName}
-                  </span>
-
-                  {/* Score */}
-                  <span className="text-xs text-phosphor tabular-nums w-16 text-right shrink-0">
-                    {result.totalScore}/{result.maxScore}
-                  </span>
-
-                  {/* Category */}
-                  <span className={`text-xs font-bold w-10 text-center shrink-0 ${tag.color}`}>
-                    {tag.label}
+                  {/* Score + category */}
+                  <span className="shrink-0 text-right">
+                    <span className="text-xs text-phosphor tabular-nums block">
+                      {result.totalScore}/{result.maxScore}
+                    </span>
+                    <span className={`text-[10px] font-bold block ${tag.color}`}>
+                      {tag.label}
+                    </span>
                   </span>
 
                   {/* Current marker */}
@@ -175,11 +171,11 @@ export default function ExportDialog({ currentResult, allResults, onClose }: Pro
           </div>
 
           {/* Footer actions */}
-          <div className="flex gap-2 px-5 py-3 border-t border-terminal-border">
+          <div className="flex gap-2 px-4 sm:px-5 py-3 border-t border-terminal-border shrink-0">
             <button
               onClick={handleExport}
               disabled={selected.size === 0}
-              className={`flex-1 border py-2.5 text-xs font-mono uppercase transition-all duration-150 ${
+              className={`flex-1 border py-3 sm:py-2.5 text-xs font-mono uppercase transition-all duration-150 min-h-[44px] ${
                 selected.size > 0
                   ? 'border-phosphor bg-phosphor-faint text-phosphor text-glow-green hover:bg-phosphor/20 border-glow-green'
                   : 'border-terminal-border text-phosphor-faint cursor-not-allowed'
@@ -189,7 +185,7 @@ export default function ExportDialog({ currentResult, allResults, onClose }: Pro
             </button>
             <button
               onClick={onClose}
-              className="flex-1 border border-terminal-border py-2.5 text-xs font-mono uppercase text-phosphor-dim hover:text-phosphor hover:border-terminal-border-bright transition-all duration-150"
+              className="flex-1 border border-terminal-border py-3 sm:py-2.5 text-xs font-mono uppercase text-phosphor-dim hover:text-phosphor hover:border-terminal-border-bright transition-all duration-150 min-h-[44px]"
             >
               [ESC] CANCEL
             </button>
