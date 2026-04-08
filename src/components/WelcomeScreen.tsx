@@ -18,8 +18,10 @@ export default function WelcomeScreen({ onStart, onResume, onHistory }: Props) {
   const [disclaimerAccepted, setDisclaimerAccepted] = useState(() => localStorage.getItem('spectrum_disclaimer') === 'accepted');
   const [showDisclaimer, setShowDisclaimer] = useState(false);
   const hasHistory = getResults().length > 0;
-  const [loadProgress, setLoadProgress] = useState(-1); // -1=not started, 0-99=loading, 100=done
-  const [showActivated, setShowActivated] = useState(false);
+  const [privacyProgress, setPrivacyProgress] = useState(-1);
+  const [toolkitProgress, setToolkitProgress] = useState(-1);
+  const [privacyDone, setPrivacyDone] = useState(false);
+  const [toolkitDone, setToolkitDone] = useState(false);
   const [bootDone, setBootDone] = useState(false);
   const [savedState, setSavedState] = useState<InProgressState | null>(null);
   const [openTooltip, setOpenTooltip] = useState<string | null>(null);
@@ -45,29 +47,36 @@ export default function WelcomeScreen({ onStart, onResume, onHistory }: Props) {
     };
   }, [openTooltip]);
 
-  // Boot animation
+  // Boot animation — privacy first, then toolkit
   const bootRan = useRef(false);
   useEffect(() => {
     if (bootRan.current) return;
     bootRan.current = true;
-    const t = setTimeout(() => {
-      setLoadProgress(0);
-      let p = 0;
-      const tick = setInterval(() => {
-        p += Math.random() * 3 + 1;
-        if (p >= 100) { p = 100; clearInterval(tick); }
-        setLoadProgress(Math.min(Math.floor(p), 100));
-      }, 100);
-    }, 600);
-    return () => clearTimeout(t);
-  }, []);
 
-  useEffect(() => {
-    if (loadProgress < 100) return;
-    const t1 = setTimeout(() => setShowActivated(true), 300);
-    const t2 = setTimeout(() => setBootDone(true), 1000);
-    return () => { clearTimeout(t1); clearTimeout(t2); };
-  }, [loadProgress]);
+    function animateBar(setProgress: (p: number) => void, onDone: () => void) {
+      let p = 0;
+      setProgress(0);
+      const tick = setInterval(() => {
+        p += Math.random() * 5 + 2;
+        if (p >= 100) { p = 100; clearInterval(tick); setProgress(100); setTimeout(onDone, 250); }
+        else setProgress(Math.floor(p));
+      }, 100);
+    }
+
+    // Start privacy bar after 600ms
+    setTimeout(() => {
+      animateBar(setPrivacyProgress, () => {
+        setPrivacyDone(true);
+        // Start toolkit bar after privacy finishes
+        setTimeout(() => {
+          animateBar(setToolkitProgress, () => {
+            setToolkitDone(true);
+            setTimeout(() => setBootDone(true), 600);
+          });
+        }, 300);
+      });
+    }, 600);
+  }, []);
 
   const toggleTest = (type: TestType) => {
     setSelectedTests(prev => {
@@ -137,31 +146,31 @@ export default function WelcomeScreen({ onStart, onResume, onHistory }: Props) {
             {'>'} SPECTRUM v1.0
           </motion.div>
 
-          {/* Privacy mode line */}
-          {loadProgress >= 0 && !showActivated && (
+          {/* Privacy mode */}
+          {privacyProgress >= 0 && !privacyDone && (
             <div className="text-phosphor-dim">
               {'>'} Privacy Mode{' '}
               <span className="text-phosphor text-[6px] align-middle">
-                {'▓'.repeat(Math.floor(loadProgress / 8))}{'░'.repeat(12 - Math.floor(loadProgress / 8))}
+                {'▓'.repeat(Math.floor(privacyProgress / 8))}{'░'.repeat(12 - Math.floor(privacyProgress / 8))}
               </span>
             </div>
           )}
-          {showActivated && (
+          {privacyDone && (
             <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ duration: 0.15 }} className="text-phosphor text-glow-green">
               {'>'} Privacy Mode Activated
             </motion.div>
           )}
 
-          {/* Toolkit line */}
-          {loadProgress >= 0 && !showActivated && (
+          {/* Toolkit */}
+          {toolkitProgress >= 0 && !toolkitDone && (
             <div className="text-phosphor-dim">
               {'>'} Autism Detection Toolkit{' '}
               <span className="text-phosphor text-[6px] align-middle">
-                {'▓'.repeat(Math.floor(loadProgress / 8))}{'░'.repeat(12 - Math.floor(loadProgress / 8))}
+                {'▓'.repeat(Math.floor(toolkitProgress / 8))}{'░'.repeat(12 - Math.floor(toolkitProgress / 8))}
               </span>
             </div>
           )}
-          {showActivated && (
+          {toolkitDone && (
             <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ duration: 0.15 }} className="text-phosphor text-glow-green">
               {'>'} Autism Detection Toolkit Activated
             </motion.div>
