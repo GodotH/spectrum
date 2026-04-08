@@ -158,7 +158,7 @@ export default function WelcomeScreen({ initialName, onStart, onResume, onHistor
 
           {/* Boot sequence */}
           <motion.div custom={0} initial="hidden" animate="visible" variants={lineVariants} className="text-phosphor text-glow-green">
-            {'>'} SPECTRUM v1.0
+            {'>'} <span className="font-bold">SPECTRUM</span> v1.0
           </motion.div>
 
           {/* Toolkit — loads first */}
