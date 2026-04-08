@@ -141,7 +141,7 @@ export default function WelcomeScreen({ onStart, onResume, onHistory }: Props) {
           {loadProgress >= 0 && !showActivated && (
             <div className="text-phosphor-dim">
               {'>'} Privacy Mode{' '}
-              <span className="text-phosphor">
+              <span className="text-phosphor text-[6px] align-middle">
                 {'▓'.repeat(Math.floor(loadProgress / 8))}{'░'.repeat(12 - Math.floor(loadProgress / 8))}
               </span>
             </div>
@@ -156,7 +156,7 @@ export default function WelcomeScreen({ onStart, onResume, onHistory }: Props) {
           {loadProgress >= 0 && !showActivated && (
             <div className="text-phosphor-dim">
               {'>'} Autism Detection Toolkit{' '}
-              <span className="text-phosphor">
+              <span className="text-phosphor text-[6px] align-middle">
                 {'▓'.repeat(Math.floor(loadProgress / 8))}{'░'.repeat(12 - Math.floor(loadProgress / 8))}
               </span>
             </div>
