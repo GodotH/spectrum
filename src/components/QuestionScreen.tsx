@@ -59,12 +59,12 @@ function OptionButton({ option, selected, onSelect, size = 'md' }: {
       }`}
     >
       <span className={`text-[10px] block mb-1 ${
-        selected ? 'text-amber text-glow-amber' : 'text-amber-dim'
+        selected ? 'text-amber text-glow-amber' : 'text-amber'
       }`}>
         [{option.key}]
       </span>
       <span className={`${textClass} block ${
-        selected ? 'text-phosphor text-glow-green' : 'text-phosphor-dim group-hover:text-phosphor/80'
+        selected ? 'text-phosphor text-glow-green' : 'text-phosphor group-hover:text-phosphor'
       }`}>
         {option.label}
       </span>

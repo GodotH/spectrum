@@ -84,7 +84,7 @@ export default function WelcomeScreen({ onStart, onResume, onHistory }: Props) {
           animateStep(setPrivacyProgress, () => {
             setPrivacyDone(true);
             setTimeout(() => setShowChecks(true), 500);
-            setTimeout(() => setBootDone(true), 1200);
+            setTimeout(() => setBootDone(true), 2200);
           });
         }, 300);
       });
@@ -217,9 +217,9 @@ export default function WelcomeScreen({ onStart, onResume, onHistory }: Props) {
           {/* Name input */}
           {bootDone && !nameConfirmed && (
             <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ duration: 0.2 }}>
-              <div className="text-phosphor-dim">{'>'} ENTER SUBJECT NAME:</div>
+              <div className="text-phosphor">{'>'} ENTER SUBJECT NAME:</div>
               <div className="flex items-baseline">
-                <span className="text-phosphor-dim mr-1">{'>'}</span>
+                <span className="text-phosphor mr-1">{'>'}</span>
                 <div className="flex-1 relative">
                   <input
                     type="text"
@@ -240,11 +240,11 @@ export default function WelcomeScreen({ onStart, onResume, onHistory }: Props) {
           {/* After name confirmed */}
           {nameConfirmed && (
             <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ duration: 0.2 }}>
-              <div className="text-phosphor-dim">
-                {'>'} SUBJECT: <span className="text-phosphor text-glow-green">{name}</span>
+              <div className="text-phosphor">
+                {'>'} SUBJECT: <span className="text-glow-green">{name}</span>
                 <button onClick={() => setNameConfirmed(false)} className="text-phosphor-faint hover:text-phosphor ml-2 transition-colors">[edit]</button>
               </div>
-              <div className="text-phosphor-dim">{'>'} SELECT TESTS:</div>
+              <div className="text-phosphor">{'>'} SELECT TESTS:</div>
 
               {/* Test grid */}
               <div className="grid grid-cols-1 xs:grid-cols-2 gap-2 my-2" ref={tooltipRef}>
@@ -263,9 +263,9 @@ export default function WelcomeScreen({ onStart, onResume, onHistory }: Props) {
                       >
                         <div>
                           <span className="text-amber">[{idx + 1}]</span>{' '}
-                          <span className={isSelected ? 'text-phosphor text-glow-green' : 'text-phosphor-dim'}>{item.label}</span>
+                          <span className={isSelected ? 'text-phosphor text-glow-green' : 'text-phosphor'}>{item.label}</span>
                         </div>
-                        <div className="text-[10px] text-phosphor-dim opacity-60">{item.desc}</div>
+                        <div className="text-[10px] text-phosphor-dim">{item.desc}</div>
                       </button>
                       {/* Info button — tap to toggle tooltip on mobile */}
                       <button
